@@ -1,7 +1,6 @@
 import sys
-sys.path.append('..') # Is there a cleaner way to do this? To ensure other modules in the project are visible
+import importlib
 from typing import List, Dict, Any, Tuple
-from helper import csv_to_json as ctj
 import os
 import json
 import requests
@@ -44,6 +43,7 @@ def put_to_zammad(endpoint:str, payload:str) -> requests.models.Response:
 
 
 def create_zammad_entities_from_csv(csv_filename: str, endpoint: str) -> List[requests.models.Response]:
+    ctj = importlib.import_module("../../helper", package='csv_to_json')
     all_rows:Dict = json.loads(ctj.convert_csv_into_json(csv_filename)) 
     resp_list = []
     print("Adding entities to Zammad:")

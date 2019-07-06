@@ -1,5 +1,5 @@
 from typing import List, Dict, Any, Tuple
-import http_req_to_zammad as zamreq
+import http_requests_handler as zamreq
 import os
 import json
 import requests
