@@ -5,11 +5,11 @@ dependency injection to keep the app flexible and ticketing-system independent.
 import importlib
 import configparser
 import sys
-
+import os
 
 __IMPORTER_PATH = sys.path[0]
 __CONF_FILE = f"{__IMPORTER_PATH}/../conf/conf.ini"
-__PATH_TO_TICKETING_SYS = '../ticketing_systems'
+__PATH_TO_TICKETING_SYS = f"{__IMPORTER_PATH}/../ticketing_systems"
 
 '''
 Allows to import a module dynamically by indicating its name as a string
@@ -17,13 +17,14 @@ Allows to import a module dynamically by indicating its name as a string
 def import_from_string(module_name:str):
     module_name = f"{__PATH_TO_TICKETING_SYS}/{module_name}" 
     print(f"IMPORTING FROM {module_name}")
-    return importlib.import_module(module_name, package=http_)
+    return importlib.import_module(module_name, package='connector')
 
 
 def import_from_config(section:str, key:str):
     conf = configparser.ConfigParser()
+    print(f"CONF FILE FOUND AT: {__CONF_FILE}")
     conf.read(__CONF_FILE)
-    return import_from_string(conf[section][key])
+    return import_from_string( conf[section][key])
 
 
 def import_ticketing_system():

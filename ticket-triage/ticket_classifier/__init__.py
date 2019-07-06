@@ -5,7 +5,7 @@ import azure.functions as func
 import requests
 from helper import importer as di # Dependency injection via configuration
 
-#TICKETING_SYSTEM = di. 
+#__TS = di.import_ticketing_system()
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('It looks like that I received some tickets!')

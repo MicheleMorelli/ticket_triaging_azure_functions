@@ -52,5 +52,9 @@ def get_ticketing_system_uri():
     return os.getenv('ZAMMAD_URI')
 
 
+def main()->None:
+    print(globals())
+
+
 if (__name__ == '__main__'):
     main()
