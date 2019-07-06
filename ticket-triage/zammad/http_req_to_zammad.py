@@ -1,5 +1,7 @@
+import sys
+sys.path.append('..') # Is there a cleaner way to do this? To ensure other modules in the project are visible
 from typing import List, Dict, Any, Tuple
-from . import csv_to_json as ctj
+from helper import csv_to_json as ctj
 import os
 import json
 import requests
