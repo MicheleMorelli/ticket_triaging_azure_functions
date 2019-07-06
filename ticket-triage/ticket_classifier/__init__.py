@@ -10,9 +10,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     num = content["tickets_count"]
     assets = [x for x in content['assets']] # each x is a string
     tickets = [x for x in content['assets']['Ticket']] # each x is a string
-    #titles = [assets['Ticket'][int(x)]['title'] for x in tickets]
-    for i in tickets:
-        print(get_ticket_info(content, i, 'title'))
+    titles = [get_ticket_info(content, x, 'title') for x in tickets]
 
     return func.HttpResponse(
          f"\n\nI found {num} new tickets\nthe assets are {assets}"
@@ -26,6 +24,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 '''
 Returns a certain attricute related to a certain ticket
 '''
-
 def get_ticket_info(content: Dict[str,str], ticketid:str, attrib: str) -> str:
-    return content['assets']['Ticket'][ticketid][attrib] 
+    return get_zammad_tickets(content)[ticketid][attrib] 
+
+
+'''
+Returns the Zammad-specific path to get to the tickets in the request message.
+This is useful when the polling system is used instead of webhooks.
+'''
+def get_zammad_tickets(content: Dict[str,str]) -> Dict[str,str]:
+    return content['assets']['Ticket']
+
