@@ -5,8 +5,8 @@ import json
 import requests
 
 
-def get_new_tickets_from_zammad_as_json() -> str:
-    return json.dumps(zamreq.get_from_zammad("tickets/search?query=state%3Anew"))
+def get_new_tickets_from_ticketing_system_as_json() -> str:
+    return json.dumps(zamreq.get_from_ticketing_system("tickets/search?query=state%3Anew"))
     
 
 def post_to_azure(payload:str) -> requests.models.Response:
@@ -23,7 +23,7 @@ def get_azure_uri():
 
 
 def main():
-    payload = get_new_tickets_from_zammad_as_json()
+    payload = get_new_tickets_from_ticketing_system_as_json()
     resp = post_to_azure(payload)
     print(resp)
     print(resp.text)
