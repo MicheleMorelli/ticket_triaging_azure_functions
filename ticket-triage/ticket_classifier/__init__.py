@@ -1,7 +1,7 @@
 import logging
 import json
 from typing import Dict, List, Any
-from zammad_functions import *
+from zammad import http_req_to_zammad
 import azure.functions as func
 import requests
 
@@ -34,11 +34,4 @@ This is useful when the polling system is used instead of webhooks.
 '''
 def get_zammad_tickets(content: Dict[str,str]) -> Dict[str,str]:
     return content['assets']['Ticket']
-
-
-
-#def post_note_to_zammad(ticketid:str):
-    
-
-
 

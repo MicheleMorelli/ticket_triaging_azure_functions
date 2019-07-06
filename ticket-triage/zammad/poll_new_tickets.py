@@ -1,5 +1,4 @@
 from typing import List, Dict, Any, Tuple
-import csv_to_json as ctj
 import http_req_to_zammad as zamreq
 import os
 import json

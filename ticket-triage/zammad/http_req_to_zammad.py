@@ -1,5 +1,5 @@
 from typing import List, Dict, Any, Tuple
-import csv_to_json as ctj
+from . import csv_to_json as ctj
 import os
 import json
 import requests
