@@ -1,9 +1,9 @@
 import logging
 import json
 from typing import Dict, List, Any
+from zammad_functions import *
 import azure.functions as func
 import requests
-
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('It looks like that I received some tickets!')
@@ -37,4 +37,8 @@ def get_zammad_tickets(content: Dict[str,str]) -> Dict[str,str]:
 
 
 
-def post_note_to_zammad(ticketid:str)
+#def post_note_to_zammad(ticketid:str):
+    
+
+
+
