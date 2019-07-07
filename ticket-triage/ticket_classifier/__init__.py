@@ -8,6 +8,7 @@ from helper import importer as di # Dependency injection via configuration
 __TS = di.import_ticketing_system()
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
+    
     logging.info('It looks like that I received some tickets!')
     content = req.get_json()
     num = content["tickets_count"]
@@ -18,7 +19,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     return func.HttpResponse(
          f"\n\nI found {num} new tickets\nthe assets are {assets}"
          f"\nThe tickets are {list(zip(tickets,titles))}"
-         f"\nGo check them on the browser!",
+         f"\nGo check them on the browser!"
+         f"\nThis was found in the config file: {di.import_from_config('ticketing_system','name')}",
          status_code=200
     )
 
