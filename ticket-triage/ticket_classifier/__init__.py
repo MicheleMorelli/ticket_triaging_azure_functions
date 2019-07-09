@@ -20,8 +20,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     return func.HttpResponse(
          f"\n\nI found {num} new tickets\nthe assets are {assets}"
          f"\nThe tickets are {list(zip(tickets,titles))}"
-         f"\nGo check them on the browser!"
-         f"\nThis was found in the config file: {TS}"
          f"\nUPDATES: {updates}",
          status_code=200
     )
@@ -42,10 +40,10 @@ def get_zammad_tickets(content: Dict[str,str]) -> Dict[str,str]:
     return content['assets']['Ticket']
 
 
-def update_tickets(ticket):
-    body = { "article": {"body": "some message of update"}}
-    
-    #func = getattr(TS,'put_to_ticketing_system')
-    #return func('tickets/' + str(ticket), body)
-    print(dir(TS))
+def update_tickets(ticket:str):
+    body = { "article": {"body": "I AM UPDATIONG THIS TICKET"}}
+    #put = getattr(TS,'put_to_ticketing_system')
+    #return put(f"tickets/{t}", body)
+    get = getattr(TS,'get_from_ticketing_system')
+    return get(f"tickets/{ticket}").json()['id']
 
