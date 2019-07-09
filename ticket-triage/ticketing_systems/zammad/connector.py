@@ -9,7 +9,7 @@ Get the values at a specified endpoint using the GET method
 def get_from_ticketing_system(endpoint: str) -> str:
     (usr,key,uri) = get_ticketing_system_usr_key_uri(endpoint)
     req = requests.get(uri, auth=(usr, key))
-    return req.json()
+    return req
 
 '''
 used to create new entities on the ticketing system
@@ -28,6 +28,7 @@ used to update an entity on the ticketing system
 def put_to_ticketing_system(endpoint:str, payload:str) -> requests.models.Response:
     content_type = 'application/json'
     (usr,key,uri) = get_ticketing_system_usr_key_uri(endpoint)
+    print(f"REQ URI IS {uri}")
     params = {'Content-Type': content_type}
     req = requests.put(uri, headers=params, auth=(usr, key), data=payload )
     return req

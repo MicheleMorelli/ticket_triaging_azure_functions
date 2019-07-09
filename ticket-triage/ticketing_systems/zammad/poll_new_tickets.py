@@ -6,7 +6,7 @@ import requests
 
 
 def get_new_tickets_from_ticketing_system_as_json() -> str:
-    return json.dumps(zamreq.get_from_ticketing_system("tickets/search?query=state%3Anew"))
+    return json.dumps(zamreq.get_from_ticketing_system("tickets/search?query=state%3Anew").json())
     
 
 def post_to_azure(payload:str) -> requests.models.Response:

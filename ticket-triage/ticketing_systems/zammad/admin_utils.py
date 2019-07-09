@@ -14,7 +14,6 @@ def main()->None:
     #print(json.loads(ctj.convert_csv_into_json(filename))) 
     #create_organizations_from_csv(filename)
     #create_users_from_csv(filename)
-    #print(get_from_ticketing_system("users"))
 
 '''
 Generic method to create entitities on the ticketing system
