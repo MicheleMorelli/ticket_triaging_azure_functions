@@ -18,7 +18,8 @@ Allows to import a module dynamically by indicating its name as a string
 def import_from_string(module_name:str):
     print(f"IMPORTING FROM {module_name}")
     sys.path.insert(0,__PATH_TO_TICKETING_SYS)
-    return importlib.import_module(module_name,package="connector")
+    connector = f"{module_name}.connector"
+    return importlib.import_module(connector,package="connector")
 
 
 
