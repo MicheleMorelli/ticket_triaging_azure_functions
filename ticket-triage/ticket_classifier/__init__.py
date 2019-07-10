@@ -39,11 +39,11 @@ This is useful when the polling system is used instead of webhooks.
 def get_zammad_tickets(content: Dict[str,str]) -> Dict[str,str]:
     return content['assets']['Ticket']
 
-
+'''
+Updates the ticket passed as an argument
+'''
 def update_tickets(ticket:str):
-    body = { "article": {"body": "I AM UPDATIONG THIS TICKET"}}
-    #put = getattr(TS,'put_to_ticketing_system')
-    #return put(f"tickets/{t}", body)
-    get = getattr(TS,'get_from_ticketing_system')
-    return get(f"tickets/{ticket}").json()['id']
+    body = '{"article":{"body":"EUREKA!!","type":"note","internal":false}}'
+    put = getattr(TS,'put_to_ticketing_system')
+    return put(f"tickets/{ticket}", body)
 
