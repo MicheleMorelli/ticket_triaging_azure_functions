@@ -9,15 +9,28 @@ from typing import List, Dict, Any
 
 PATH_TO_JSON_FILES='../datasets'
 
+
+'''
+Creates a new CSV file based on the values of a JSON file
+'''
 def json_to_csv(filename:str):
     jsonfile = {}
     with open(filename,'r') as fh:
         jsonfile = json.load(fh)
     csv_file = csv.writer(open(f"{filename.replace('.json','.csv')}", "w"))
-    csv_file.writerow(jsonfile['tickets'][0].keys())
-    for ticket in jsonfile['tickets']:
+    csv_file.writerow(jsonfile['cosector_tickets'][0].keys())
+    for ticket in jsonfile['cosector_tickets']:
         csv_file.writerow(ticket.values())
 
+
+'''
+Returns the list of all Cosector tickets from Connectwise as a JSON string,
+collating information from various sources
+'''
+def get_final_cosector_tickets_list_as_json():
+    final_tickets_list = collate_json_files()
+    tickets_dict = {"cosector_tickets": final_tickets_list}
+    return json.dumps(tickets_dict)
 
 
 
@@ -151,7 +164,9 @@ def main():
     #json_file=f"{PATH_TO_JSON_FILES}/desc_5_7000_7193.json"
     #json_to_csv(json_file)
     #print(unite_desc_json_files())
-    print(collate_json_files()[6000])
+    #print(collate_json_files()[6000]) # testing
+    #print(get_final_cosector_tickets_list_as_json())
+    json_to_csv(f"{PATH_TO_JSON_FILES}/final_tickets_list.json")
 
 if __name__ == '__main__':
     main()
