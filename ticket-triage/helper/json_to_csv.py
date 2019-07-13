@@ -26,7 +26,8 @@ Takes data from the 2 big json files and ensures that each ticket has the follow
 
 id
 summary
-board
+board_id
+board_name
 company_id
 company_name
 
@@ -58,8 +59,29 @@ def collate_json_files():
     with open(desc_input_file, 'r') as fh:
         json_file = json.load(fh)
         all_desc = json_file['descriptions']
-    print(f"tickets: {len(all_tickets)}")
-    print(f"DEscritpions: {len(all_desc)}")
+    output_tickets_list = [] # the list with the final ticket info
+    for ticket in all_tickets:
+        out_t = {
+                'id': ticket.get('id',None),
+                'summary': ticket.get('summary',None),
+                'board_id': ticket.get('board',{}).get('id',None),
+                'board_name': ticket.get('board',{}).get('name',None),
+                'company_id': ticket.get('company',{}).get('id',None),
+                'company_identifier': ticket.get('company',{}).get('identifier',None),
+                'company_name': ticket.get('company',{}).get('name',None),
+                'type_id': ticket.get('type',{}).get('id',None),
+                'type_name': ticket.get('type',{}).get('name',None),
+                'subtype_id': ticket.get('subtype',{}).get('id',None),
+                'subtype_name': ticket.get('subtype',{}).get('name',None),
+                'priority_id': ticket.get('priority',{}).get('id',None),
+                'priority_name': ticket.get('priority',{}).get('name',None),
+                }
+        output_tickets_list.append(out_t)
+
+    return output_tickets_list
+
+
+
 
 
     
@@ -89,7 +111,7 @@ def main():
     #json_file=f"{PATH_TO_JSON_FILES}/desc_5_7000_7193.json"
     #json_to_csv(json_file)
     #print(unite_desc_json_files())
-    collate_json_files()
+    print(collate_json_files()[6000])
 
 if __name__ == '__main__':
     main()
