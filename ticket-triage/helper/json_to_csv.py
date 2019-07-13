@@ -20,6 +20,8 @@ def json_to_csv(filename:str):
     csv_file = csv.writer(open(f"{filename.replace('.json','.csv')}", "w"))
     csv_file.writerow(jsonfile['cosector_tickets'][0].keys())
     for ticket in jsonfile['cosector_tickets']:
+        if ticket['id'] in  [5567, 9761,7611,5083]: # problematic tickets
+            continue
         csv_file.writerow(ticket.values())
 
 
@@ -57,7 +59,7 @@ priority_name
 
 product
 product_area
-urgency
+urgency # NOT REALLY USED, skip
 
 ##### notes #####
 description
@@ -66,8 +68,8 @@ def collate_json_files():
     # Get tickets list and description list from the JSON files 
     all_tickets = []
     all_desc = []
-    tickets_input_file = f"{PATH_TO_JSON_FILES}/all_tickets_formatted.json"
-    desc_input_file = f"{PATH_TO_JSON_FILES}/all_descriptions.json"
+    tickets_input_file = f"{PATH_TO_JSON_FILES}/json/source_files/all_tickets_formatted.json"
+    desc_input_file = f"{PATH_TO_JSON_FILES}/json/source_files/all_descriptions.json"
     with open(tickets_input_file, 'r') as fh:
         json_file = json.load(fh)
         all_tickets = json_file['tickets']
@@ -83,7 +85,7 @@ def collate_json_files():
         cf = ticket['customFields']
         product = get_custom_field(cf,'Product') 
         product_area = get_custom_field(cf,'Product Area') 
-        urgency = get_custom_field(cf,'Urgency') 
+        #urgency = get_custom_field(cf,'Urgency') #not really used
         #sorting all_desc to make things way quicker
         all_desc = sorted(all_desc, key = lambda t: t['ticketId'])
         desc = get_ticket_description(all_desc, ticketid)
@@ -98,13 +100,12 @@ def collate_json_files():
                 'company_name': ticket.get('company',{}).get('name',None),
                 'type_id': ticket.get('type',{}).get('id',None),
                 'type_name': ticket.get('type',{}).get('name',None),
-                'subtype_id': ticket.get('subtype',{}).get('id',None),
-                'subtype_name': ticket.get('subtype',{}).get('name',None),
+                'subtype_id': ticket.get('subType',{}).get('id',None),
+                'subtype_name': ticket.get('subType',{}).get('name',None),
                 'priority_id': ticket.get('priority',{}).get('id',None),
                 'priority_name': ticket.get('priority',{}).get('name',None),
                 'product': product,
                 'product_area': product_area,
-                'urgency': urgency,
                 }
         output_tickets_list.append(out_t)
     return output_tickets_list
@@ -165,7 +166,7 @@ def main():
     #json_to_csv(json_file)
     #print(unite_desc_json_files())
     #print(collate_json_files()[6000]) # testing
-    #print(get_final_cosector_tickets_list_as_json())
+    # print(get_final_cosector_tickets_list_as_json()) #creating the file from the CLI
     json_to_csv(f"{PATH_TO_JSON_FILES}/final_tickets_list.json")
 
 if __name__ == '__main__':
