@@ -47,36 +47,30 @@ def collate_json_files():
     
 
 '''
-Inifies all the small desc json files into a unique one
+Unifies all the small desc json files into a unique json file containing all 
+descriptions
 '''
 def unite_desc_json_files():
     desc_json_files=[
             "desc_1_0_2999.json",
-            "desc_4_6500_6999.json",
             "desc_2_3000_5999.json",
             "desc_3_6000_6499.json",
-            "desc_5_7000_7193.json"]
-    
+            "desc_4_6500_6999.json",
+            "desc_5_7000_7193.json"
+            ]
+    all_descriptions = []
     for f in desc_json_files:
         with open(f"{PATH_TO_JSON_FILES}/{f}", 'r') as jf:
             d = json.load(jf)
-            print(len(d['descriptions']))
-    
-
-    
-    #output_desc_json_filename='all_descriptions.json'
-    #output_string = ""
-    #with open(output_desc_json_filename, 'w') as fh:
+            all_descriptions += d['descriptions']
+    return json.dumps( {'descriptions':all_descriptions} )
         
         
-
-
-
 
 def main():
     #json_file=f"{PATH_TO_JSON_FILES}/desc_5_7000_7193.json"
     #json_to_csv(json_file)
-    unite_desc_json_files()
+    print(unite_desc_json_files())
 
 if __name__ == '__main__':
     main()
