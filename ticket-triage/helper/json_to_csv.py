@@ -61,9 +61,16 @@ def collate_json_files():
         all_desc = json_file['descriptions']
     output_tickets_list = [] # the list with the final ticket info
     for ticket in all_tickets:
+        # dealing with custom fields
+        cf = ticket['customFields']
+        product = get_custom_field(cf,'Product') 
+        product_area = get_custom_field(cf,'Product Area') 
+        urgency = get_custom_field(cf,'Urgency') 
+
         out_t = {
                 'id': ticket.get('id',None),
                 'summary': ticket.get('summary',None),
+                'description':"",
                 'board_id': ticket.get('board',{}).get('id',None),
                 'board_name': ticket.get('board',{}).get('name',None),
                 'company_id': ticket.get('company',{}).get('id',None),
@@ -75,16 +82,20 @@ def collate_json_files():
                 'subtype_name': ticket.get('subtype',{}).get('name',None),
                 'priority_id': ticket.get('priority',{}).get('id',None),
                 'priority_name': ticket.get('priority',{}).get('name',None),
+                'product': product,
+                'product_area': product_area,
+                'urgency': urgency,
                 }
         output_tickets_list.append(out_t)
-
     return output_tickets_list
 
 
 
+def get_custom_field(cf: List[Dict[str,str]], desired_field_caption: str):
+    selected_field = list(filter(lambda x: x.get('caption',None) == desired_field_caption,cf))
+    return selected_field[0].get('value', None) if len(selected_field) >0 else None
 
 
-    
 
 '''
 Unifies all the small desc json files into a unique json file containing all 
