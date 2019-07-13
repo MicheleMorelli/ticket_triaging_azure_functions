@@ -1,5 +1,5 @@
 '''
-Helper functions to convert JSON files into csv.
+Helper functions to manipulate and convert JSON files into csv.
 Used to ingest the data from CW.
 '''
 
@@ -17,7 +17,13 @@ def json_to_csv(filename:str):
     csv_file.writerow(jsonfile['tickets'][0].keys())
     for ticket in jsonfile['tickets']:
         csv_file.writerow(ticket.values())
+
+
+
+
 '''
+Takes data from the 2 big json files and ensures that each ticket has the following data:
+
 id
 summary
 board
@@ -42,7 +48,19 @@ urgency
 description
 '''
 def collate_json_files():
-    pass
+    all_tickets = []
+    all_desc = []
+    tickets_input_file = f"{PATH_TO_JSON_FILES}/all_tickets_formatted.json"
+    desc_input_file = f"{PATH_TO_JSON_FILES}/all_descriptions.json"
+    with open(tickets_input_file, 'r') as fh:
+        json_file = json.load(fh)
+        all_tickets = json_file['tickets']
+    with open(desc_input_file, 'r') as fh:
+        json_file = json.load(fh)
+        all_desc = json_file['descriptions']
+    print(f"tickets: {len(all_tickets)}")
+    print(f"DEscritpions: {len(all_desc)}")
+
 
     
 
@@ -70,7 +88,8 @@ def unite_desc_json_files():
 def main():
     #json_file=f"{PATH_TO_JSON_FILES}/desc_5_7000_7193.json"
     #json_to_csv(json_file)
-    print(unite_desc_json_files())
+    #print(unite_desc_json_files())
+    collate_json_files()
 
 if __name__ == '__main__':
     main()
