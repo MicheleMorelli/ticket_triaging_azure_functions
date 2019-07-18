@@ -43,7 +43,7 @@ def get_zammad_tickets(content: Dict[str,str]) -> Dict[str,str]:
 Updates the ticket passed as an argument
 '''
 def update_tickets(ticket:str):
-    body = '{"article":{"body":"EUREKA!!","type":"note","internal":false}}'
+    body = '{"article":{"body":"I have been updated from Azure functions!","type":"note","internal":false}}'
     put = getattr(TS,'put_to_ticketing_system')
     return put(f"tickets/{ticket}", body)
 
