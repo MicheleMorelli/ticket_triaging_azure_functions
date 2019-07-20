@@ -14,6 +14,8 @@ def clean_ticket_description(ticket_description:str):
     all_words = list(filter(lambda x: not is_number(x), all_words))
     #remove email addresses
     all_words = list(filter(lambda x: not is_potential_email_address(x), all_words))
+    #remove  irrelevant URLs
+    all_words = list(filter(lambda x: not is_a_URL(x), all_words))
     # remove stopwords
     all_words = remove_stopwords(all_words)
     # remove names
@@ -41,6 +43,13 @@ def is_potential_email_address(s:str)->bool:
     email_regex = r'[a-z0-9_.-]+?@[a-z0-9_-]+\.[a-z0-9]'
     return re.search(email_regex,s)
 
+
+'''
+Checks if a string is a URL
+'''
+def is_a_URL(s:str)->bool:
+    URL_regex = r'(https?:\/\/?(www\.))?[a-z0-9./_-]+\.(com|ac\.uk|org|co\.uk)'
+    return re.search(URL_regex,s)
 
 '''
 Removes English stopwords
