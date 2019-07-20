@@ -4,31 +4,23 @@ import string
 from typing import List, Dict
 from toolz import pipe
 
-def clean_ticket_description(ticket_description:str):
-    #to lower case
-    ticket_description = ticket_description.lower()
-    # separate based on white spaces
-    all_words = re.split("\s+",ticket_description)
-    #remove empty strings
-    all_words = list(filter(lambda x: x != '', all_words))
-    #remove numbers
-    all_words = list(filter(lambda x: not is_number(x), all_words))
-    #remove email addresses
-    all_words = list(filter(lambda x: not is_potential_email_address(x), all_words))
-    #remove  irrelevant URLs
-    all_words = list(filter(lambda x: not is_a_URL(x), all_words))
-    # remove stopwords
-    all_words = remove_stopwords(all_words)
-    # remove names
-    all_words = remove_names(all_words)
 
-    # find related urls and replace
-    
-    # lemmatize
-    lem = nltk.WordNetLemmatizer()
-    all_words = [lem.lemmatize(x, wordnet_pos_mapper(x)) for x in all_words]
-    tokens = all_words
-    return tokens
+'''
+Takes a ticket description as an argument, and passes it though a functional 
+pipeline, that sanitises, tokenise and lemmatise it.
+'''
+def functional_cleaner(ticket_description:str)->List[str]:
+    return pipe( 
+            re.split(r'\s+', ticket_description.lower()), # the input list (*TO LOWER CASE!*)
+            remove_empty_strings,
+            remove_numbers,
+            remove_email_addresses,
+            remove_URLs,
+            remove_stopwords,
+            remove_names,
+            lemmatize_all
+            )
+
 
 
 '''
@@ -104,6 +96,16 @@ def remove_names(s_list:List[str])->List[str]:
 
 
 '''
+Wrapper of the WordNet lemmatizer to be used in the pipeline.
+Lemmatises the words using the pos_mapper helper function below.
+'''
+def lemmatize_all(s_list:List[str])->List[str]:
+    lem = nltk.WordNetLemmatizer()
+    return [lem.lemmatize(x, wordnet_pos_mapper(x)) for x in s_list]
+
+
+
+'''
 Returns the nltk.wordnet POS_tag of the word passed as an argument.
 This is used by the WordNet lemmatizer in the pipeline.
 '''
@@ -116,10 +118,10 @@ def wordnet_pos_mapper(s:str):
 
 
 s='''
-
 '''
 
 #cleaned = clean_ticket_description(s)
 #print(cleaned)
 #print(len(cleaned))
-print(remove_URLs(re.split(r'\s+', s)))
+#print(remove_email_addresses(re.split(r'\s+', s)))
+print(functional_cleaner(s))
