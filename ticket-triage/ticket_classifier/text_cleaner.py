@@ -2,6 +2,7 @@ import nltk
 import re
 import string
 from typing import List, Dict
+from toolz import pipe
 
 def clean_ticket_description(ticket_description:str):
     #to lower case
@@ -29,50 +30,82 @@ def clean_ticket_description(ticket_description:str):
     tokens = all_words
     return tokens
 
+
 '''
-Checks if a string is a number
+Higher order function to be used in the sanitizer's pipeline. It takes a predicate
+and a string list, and removes all the elements of the list where the predicate 
+returns true.
 '''
-def is_number(s:str)->bool:
+def remove_if(predicate, string_list):
+    return list(filter(lambda x: not predicate(x), string_list))
+
+
+
+'''
+Removes empty strings from a list of strings.
+'''
+def remove_empty_strings(s_list:List[str])->List[str]:
+    is_empty = lambda x: not x
+    return remove_if(is_empty,s_list)
+
+
+'''
+Removes strings composed only by numbers from a list of strings
+'''
+def remove_numbers(s_list:List[str])->List[str]:
     num_regex = r'\d+'
-    return re.search(num_regex,s)
+    is_number = lambda x: re.search(num_regex,x)
+    return remove_if(is_number, s_list)
+
 
 '''
-Checks if a string is an email address
+Removes email addresses from a list of strings
 '''
-def is_potential_email_address(s:str)->bool:
+def remove_email_addresses(s_list:List[str])->List[str]:
     email_regex = r'[a-z0-9_.-]+?@[a-z0-9_-]+\.[a-z0-9]'
-    return re.search(email_regex,s)
-
+    is_email_address = lambda x: re.search(email_regex,x)
+    return remove_if(is_email_address, s_list)
 
 '''
 Checks if a string is a URL
+TODO: improve regex
 '''
 def is_a_URL(s:str)->bool:
     URL_regex = r'(https?:\/\/?(www\.))?[a-z0-9./_-]+\.(com|ac\.uk|org|co\.uk|gov)'
     return re.search(URL_regex,s)
 
 
+
+'''
+Removes URLs from a list of strings
+'''
+def remove_URLs(s_list:List[str])->List[str]:
+    return remove_if(is_a_URL, s_list)
+
+
 '''
 '''
 
 '''
-Removes English stopwords
+Removes English stopwords from a list of strings
 '''
-def remove_stopwords(string_list:List[str]):
-    stopwords = nltk.corpus.stopwords.words('english')
-    return [x for x in string_list if x not in stopwords]
+def remove_stopwords(s_list:List[str])->List[str]:
+    is_a_stopword = lambda x: x in nltk.corpus.stopwords.words('english')
+    return remove_if(is_a_stopword, s_list)
     
 
 '''
-Remove names
+Remove names from a list of strings.
 '''
-def remove_names(string_list:List[str]):
+def remove_names(s_list:List[str])->List[str]:
     names = [x.lower() for x in nltk.corpus.names.words()]
-    return [x for x in string_list if x not in names]
+    is_a_name = lambda x: x in names 
+    return remove_if(is_a_name, s_list)
 
 
 '''
-Returns the nltk.wordnet POS_tag used by the lemmatizer
+Returns the nltk.wordnet POS_tag of the word passed as an argument.
+This is used by the WordNet lemmatizer in the pipeline.
 '''
 def wordnet_pos_mapper(s:str):
     pos_map = {"n": "NOUN","v": "VERB","r": "ADV", "j":"ADV"}
@@ -86,7 +119,7 @@ s='''
 
 '''
 
-cleaned = clean_ticket_description(s)
-print(cleaned)
-print(len(cleaned))
-
+#cleaned = clean_ticket_description(s)
+#print(cleaned)
+#print(len(cleaned))
+print(remove_URLs(re.split(r'\s+', s)))
