@@ -48,8 +48,12 @@ def is_potential_email_address(s:str)->bool:
 Checks if a string is a URL
 '''
 def is_a_URL(s:str)->bool:
-    URL_regex = r'(https?:\/\/?(www\.))?[a-z0-9./_-]+\.(com|ac\.uk|org|co\.uk)'
+    URL_regex = r'(https?:\/\/?(www\.))?[a-z0-9./_-]+\.(com|ac\.uk|org|co\.uk|gov)'
     return re.search(URL_regex,s)
+
+
+'''
+'''
 
 '''
 Removes English stopwords
@@ -78,8 +82,11 @@ def wordnet_pos_mapper(s:str):
     return tag
 
 
+s='''
 
-#cleaned = clean_ticket_description(s)
-#print(cleaned)
-#print(len(cleaned))
+'''
+
+cleaned = clean_ticket_description(s)
+print(cleaned)
+print(len(cleaned))
 
