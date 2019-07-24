@@ -17,16 +17,20 @@ def functional_cleaner(ticket_description:str)->List[str]:
             remove_twitter_contacts,
             remove_email_addresses,
             remove_URLs,
+            remove_non_printable_hex,
             remove_stopwords,
             remove_punctuation,
-            #remove_numbers,
-            remove_strings_starting_with_numbers,
+            remove_non_ASCII_chars,
             remove_ticket_references,
+            #NUMBERS ===============================
+            #remove_numbers,
+            #remove_strings_starting_with_numbers,
+            remove_strings_containing_any_numbers, # may be too much!
             remove_very_long_words,
             remove_very_short_words,
             remove_empty_strings, # don't pass empty strings to the lemmatizer!
             remove_names,
-            #lemmatize_all
+            lemmatize_all
             )
 
 
@@ -50,7 +54,27 @@ def remove_empty_strings(s_list:List[str])->List[str]:
 
 
 '''
-Removes strings composed by only numbers from a list of strings
+Remove all the strings that contain a number. Might be too extreme!
+'''
+def remove_strings_containing_any_numbers(s_list:List[str])->List[str]:
+    num_regex = r'[0-9]+'
+    is_number = lambda x: re.search(num_regex,x)
+    return remove_if(is_number, s_list)
+
+
+'''
+Removes escaped hexadecimals such as \x43
+'''
+def remove_non_printable_hex(s_list:List[str])->List[str]:
+    hex_regex = r'\\x\d+'
+    is_hex = lambda x: re.search(hex_regex,x)
+    return remove_if(is_hex, s_list)
+
+
+
+
+'''
+Removes strings composed by *only* numbers from a list of strings
 '''
 def remove_numbers(s_list:List[str])->List[str]:
     num_regex = r'^[0-9]+$'
@@ -59,7 +83,7 @@ def remove_numbers(s_list:List[str])->List[str]:
 
 
 '''
-Removes strings composed by only numbers from a list of strings
+Removes strings starting with numbers from a list of strings
 '''
 def remove_strings_starting_with_numbers(s_list:List[str])->List[str]:
     start_with_num_regex = r'^[0-9]+'
@@ -73,6 +97,11 @@ Removes all punctuation from the words in a list of strings
 def remove_punctuation(s_list:List[str])->List[str]:
     return [x.translate(str.maketrans("", "", string.punctuation)) for x in s_list]
 
+'''
+Removes non-ascii characters. MIght be too aggressive
+'''
+def remove_non_ASCII_chars(s_list:List[str]) -> List[str]:
+    return [x.encode('ascii', 'ignore').decode('ascii') for x in s_list]
 
 '''
 Removes very long words. Especially useful to remove hashes, residual URLs and 
@@ -87,7 +116,7 @@ def remove_very_long_words(s_list:List[str])-> List[str]:
 '''
 Removes very short words. 
 '''
-def remove_very_long_words(s_list:List[str])-> List[str]:
+def remove_very_short_words(s_list:List[str])-> List[str]:
     short_threshold = 2 # this is arbitrary, and has been adjusted by checking the results
     is_a_very_short_word = lambda x: len(x) <= short_threshold
     return remove_if(is_a_very_short_word, s_list)
@@ -96,7 +125,7 @@ def remove_very_long_words(s_list:List[str])-> List[str]:
 '''
 Removes ticket identifiers
 '''
-def remove_ticket_references(s_list: List[str]) = > List[str]:
+def remove_ticket_references(s_list: List[str]) -> List[str]:
     ticketid_regex = r'^inc\d+$' # Service now format
     is_a_ticket_identifier = lambda x: re.search(ticketid_regex,x)
     return remove_if(is_a_ticket_identifier, s_list)
@@ -234,11 +263,4 @@ def wordnet_pos_mapper(s:str):
 
 s='''
 '''
-print(functional_cleaner(s))
-
-#url1 = 'https://moodle.royalholloway.ac.uk/course/view.php?id=6477' 
-#url2 = '[https://research.royalholloway.ac.uk/course/view.php?id=6477]'
-#print(is_relevant_URL(url1))
-#print(is_relevant_URL(url2))
-#print(transform_relevant_URLs_into_tags([url1,url2,"asdas","sdfsdf"]))
-
+#print(functional_cleaner(s))
