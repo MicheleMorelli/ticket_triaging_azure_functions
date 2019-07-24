@@ -19,10 +19,14 @@ def functional_cleaner(ticket_description:str)->List[str]:
             remove_URLs,
             remove_stopwords,
             remove_punctuation,
-            remove_numbers,
+            #remove_numbers,
+            remove_strings_starting_with_numbers,
+            remove_ticket_references,
+            remove_very_long_words,
+            remove_very_short_words,
             remove_empty_strings, # don't pass empty strings to the lemmatizer!
             remove_names,
-            lemmatize_all
+            #lemmatize_all
             )
 
 
@@ -46,18 +50,56 @@ def remove_empty_strings(s_list:List[str])->List[str]:
 
 
 '''
-Removes strings composed by numbers from a list of strings
+Removes strings composed by only numbers from a list of strings
 '''
 def remove_numbers(s_list:List[str])->List[str]:
     num_regex = r'^[0-9]+$'
     is_number = lambda x: re.search(num_regex,x)
     return remove_if(is_number, s_list)
 
+
+'''
+Removes strings composed by only numbers from a list of strings
+'''
+def remove_strings_starting_with_numbers(s_list:List[str])->List[str]:
+    start_with_num_regex = r'^[0-9]+'
+    starts_with_number = lambda x: re.search(start_with_num_regex,x)
+    return remove_if(starts_with_number, s_list)
+    
+
 '''
 Removes all punctuation from the words in a list of strings
 '''
 def remove_punctuation(s_list:List[str])->List[str]:
     return [x.translate(str.maketrans("", "", string.punctuation)) for x in s_list]
+
+
+'''
+Removes very long words. Especially useful to remove hashes, residual URLs and 
+other anomalies
+'''
+def remove_very_long_words(s_list:List[str])-> List[str]:
+    long_threshold = 25 # this is arbitrary, and has been adjusted by checking the results
+    is_a_very_long_word = lambda x: len(x) >= long_threshold
+    return remove_if(is_a_very_long_word, s_list)
+
+
+'''
+Removes very short words. 
+'''
+def remove_very_long_words(s_list:List[str])-> List[str]:
+    short_threshold = 2 # this is arbitrary, and has been adjusted by checking the results
+    is_a_very_short_word = lambda x: len(x) <= short_threshold
+    return remove_if(is_a_very_short_word, s_list)
+
+
+'''
+Removes ticket identifiers
+'''
+def remove_ticket_references(s_list: List[str]) = > List[str]:
+    ticketid_regex = r'^inc\d+$' # Service now format
+    is_a_ticket_identifier = lambda x: re.search(ticketid_regex,x)
+    return remove_if(is_a_ticket_identifier, s_list)
 
 
 
@@ -132,10 +174,11 @@ def restech_words()->List[str]:
 
 '''
 Checks if a string is a URL
-TODO: improve regex
+Using regex found at 
+Daveo (username), https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url 
 '''
 def is_a_URL(s:str)->bool:
-    URL_regex = r'(https?:\/\/)?(www\.)?[a-z0-9./_-]+\.(com|ac\.uk|org|co\.uk|gov|net)(\/.*)?'
+    URL_regex = r'[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)'
     return re.search(URL_regex,s)
 
 
@@ -190,10 +233,7 @@ def wordnet_pos_mapper(s:str):
 
 
 s='''
-
-'Hi Matt,\n\nAs you can see below we have 19/20 courses accidentally being created in the 18/19 Moodle. We are currently investigating at our end and we might need you to remove the 19/20 course on the production system.\n\nWe will review options and agree next steps at our call later today.\n\nThanks\nRegards\nMarinella\n\nFrom: King, Martin\nSent: 05 June 2019 16:17\nTo: IT Service Desk <itservicedesk@rhul.ac.uk>\nCc: Vowles, Marinella <Marinella.Vowles@rhul.ac.uk>; Zhang, Yu (staff - IT Development) <Yu.Zhang@rhul.ac.uk>; Crompton, M <M.Crompton@rhul.ac.uk>; Lewis, Rebecca <Rebecca.Lewis@rhul.ac.uk>; Knight, Andrew <Andrew.Knight@rhul.ac.uk>\nSubject: Moodle: Appearance of 19/20 courses in 18/19 Moodle\nImportance: High\n\nHI,\n\nThe E-Learning Team have noticed that approximately 2765 19/20 session courses are now in Moodle PROD (18/19).\xa0 This is unexpected and concerning.\xa0 Can you explain why this has happened.\xa0 This in no way fits in with our agreed approach to Moodle course management.\n\nThat there is, for example, now a copy of 18/19 MU2329 https://moodle.royalholloway.ac.uk/course/view.php?id=3173 [https://moodle.royalholloway.ac.uk/course/view.php?id=3173] \xa0and a copy of 19/20 MU2329 \xa0created on June 1 at 3.12 am https://moodle.royalholloway.ac.uk/course/view.php?id=6477 [https://moodle.royalholloway.ac.uk/course/view.php?id=6477] means that there will be a conflict when the rollover script is applied to the former – as it will have the same course full name, course short name and course ID number as the latter.\n\nThis needs to be investigated, prevented from reoccurring before rollover and the erroneously created spaces removed.\nBest Wishes\nMartin\n_______________________________________________________________\nMartin King B.A., M.Sc., A.H.E.A.\n\nSenior Learning & Technology Officer\nEducational Development, Academic Services\nRoyal Holloway, University of London\n\nTel: 01784 41 4371 ¦ @elswedgio [https://twitter.com/elswedgio]\nhttps://www.royalholloway.ac.uk/staff/teaching/e-learning/ [https://www.royalholloway.ac.uk/staff/teaching/e-learning/]'
 '''
-
 print(functional_cleaner(s))
 
 #url1 = 'https://moodle.royalholloway.ac.uk/course/view.php?id=6477' 
