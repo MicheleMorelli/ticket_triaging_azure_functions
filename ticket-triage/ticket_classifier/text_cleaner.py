@@ -13,13 +13,14 @@ strings.
 def functional_cleaner(ticket_description:str)->List[str]:
     return pipe( 
             re.split(r'\s+', ticket_description.lower()), # the input list (*TO LOWER CASE!*)
-            remove_empty_strings,
-            remove_numbers,
             transform_relevant_URLs_into_tags,
             remove_twitter_contacts,
             remove_email_addresses,
             remove_URLs,
             remove_stopwords,
+            remove_punctuation,
+            remove_numbers,
+            remove_empty_strings, # don't pass empty strings to the lemmatizer!
             remove_names,
             lemmatize_all
             )
@@ -51,6 +52,13 @@ def remove_numbers(s_list:List[str])->List[str]:
     num_regex = r'^[0-9]+$'
     is_number = lambda x: re.search(num_regex,x)
     return remove_if(is_number, s_list)
+
+'''
+Removes all punctuation from the words in a list of strings
+'''
+def remove_punctuation(s_list:List[str])->List[str]:
+    return [x.translate(str.maketrans("", "", string.punctuation)) for x in s_list]
+
 
 
 '''
@@ -183,6 +191,7 @@ def wordnet_pos_mapper(s:str):
 
 s='''
 
+'Hi Matt,\n\nAs you can see below we have 19/20 courses accidentally being created in the 18/19 Moodle. We are currently investigating at our end and we might need you to remove the 19/20 course on the production system.\n\nWe will review options and agree next steps at our call later today.\n\nThanks\nRegards\nMarinella\n\nFrom: King, Martin\nSent: 05 June 2019 16:17\nTo: IT Service Desk <itservicedesk@rhul.ac.uk>\nCc: Vowles, Marinella <Marinella.Vowles@rhul.ac.uk>; Zhang, Yu (staff - IT Development) <Yu.Zhang@rhul.ac.uk>; Crompton, M <M.Crompton@rhul.ac.uk>; Lewis, Rebecca <Rebecca.Lewis@rhul.ac.uk>; Knight, Andrew <Andrew.Knight@rhul.ac.uk>\nSubject: Moodle: Appearance of 19/20 courses in 18/19 Moodle\nImportance: High\n\nHI,\n\nThe E-Learning Team have noticed that approximately 2765 19/20 session courses are now in Moodle PROD (18/19).\xa0 This is unexpected and concerning.\xa0 Can you explain why this has happened.\xa0 This in no way fits in with our agreed approach to Moodle course management.\n\nThat there is, for example, now a copy of 18/19 MU2329 https://moodle.royalholloway.ac.uk/course/view.php?id=3173 [https://moodle.royalholloway.ac.uk/course/view.php?id=3173] \xa0and a copy of 19/20 MU2329 \xa0created on June 1 at 3.12 am https://moodle.royalholloway.ac.uk/course/view.php?id=6477 [https://moodle.royalholloway.ac.uk/course/view.php?id=6477] means that there will be a conflict when the rollover script is applied to the former – as it will have the same course full name, course short name and course ID number as the latter.\n\nThis needs to be investigated, prevented from reoccurring before rollover and the erroneously created spaces removed.\nBest Wishes\nMartin\n_______________________________________________________________\nMartin King B.A., M.Sc., A.H.E.A.\n\nSenior Learning & Technology Officer\nEducational Development, Academic Services\nRoyal Holloway, University of London\n\nTel: 01784 41 4371 ¦ @elswedgio [https://twitter.com/elswedgio]\nhttps://www.royalholloway.ac.uk/staff/teaching/e-learning/ [https://www.royalholloway.ac.uk/staff/teaching/e-learning/]'
 '''
 
 print(functional_cleaner(s))
