@@ -260,7 +260,3 @@ def wordnet_pos_mapper(s:str):
     tag = getattr(nltk.wordnet.wordnet,pos)
     return tag
 
-
-s='''
-'''
-#print(functional_cleaner(s))
