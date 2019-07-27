@@ -30,7 +30,7 @@ def functional_cleaner(ticket_description:str)->List[str]:
             remove_very_short_words,
             remove_empty_strings, # don't pass empty strings to the lemmatizer!
             remove_names,
-            lemmatize_all
+            #lemmatize_all
             )
 
 
