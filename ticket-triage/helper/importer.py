@@ -33,13 +33,21 @@ def import_from_config(section:str, key:str):
     print(conf.sections())
     return import_from_string( conf[section][key])
 
+'''
+Returns the value of a config string.
+'''
+def get_config(section:str, key:str)->str:
+    conf = configparser.ConfigParser()
+    conf.read(__CONF_FILE)
+    return conf[section][key]
 
 def import_ticketing_system():
     return import_from_config('ticketing_system','name')
 
 
 def main():
-    print(type(import_ticketing_system()))
+    #print(type(import_ticketing_system()))
+    print(get_config("classifier_datasets", "csv_path"))
 
 if __name__ == '__main__':
     main()
