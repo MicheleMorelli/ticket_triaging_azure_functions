@@ -28,7 +28,7 @@ def get_new_fitted_vectoriser(dataset:List[str])->TfidfVectorizer:
 
 '''
 Takes a Pandas Series, and returns a list of strings. This was to solve the 
-issues with the vectoriser with pd's NaN elements (which are of type float)
+issues with the vectoriser, which does not like Pandas's NaN elements (which are of type float)
 '''
 def convert_pd_series_with_NaN_to_string_list(series:pd.Series)->List[str]:
     return ["" if type(x) == float else x for x in series]
