@@ -88,6 +88,7 @@ Dumps all vectorised features for both 'descriptions' and 'summaries'
 '''
 if __name__ == '__main__':
     start_time = time.time()
+    
     full_dataset = import_dataset_from_csv_as_panda_dataframe('14-07CLEANED_dataset.csv')
     # change the vect_field to fit the vectoriser on another column of the dataset
     vect_field = 'description' # ie: the column use to fit the vectoriser
@@ -95,6 +96,7 @@ if __name__ == '__main__':
     vect = pickle.load(open(vect_pickle_filename, "rb")) # the TfIdf vectoriser
     field_list = ['summary','description']
     dump_all_vectorised_data_to_pickle(vect, full_dataset, field_list)
+    
     print("All vectorised data was dumped to pickle files!")
     processing_time= time.time() - start_time
     print(f"PROCESSING TIME: {processing_time} seconds (approximately {processing_time // 60} minutes)")
