@@ -4,6 +4,7 @@ import string
 from typing import List, Dict
 from toolz import pipe
 
+_LEMMATISER = nltk.WordNetLemmatizer()
 
 '''
 Takes a ticket description as an argument, and passes it though a functional 
@@ -30,7 +31,8 @@ def functional_cleaner(ticket_description:str)->List[str]:
             remove_very_short_words,
             remove_empty_strings, # don't pass empty strings to the lemmatizer!
             remove_names,
-            #lemmatize_all
+            remove_residual_URLs,
+            lemmatize_all
             )
 
 
@@ -166,39 +168,17 @@ def turn_into_tag(s:str)->str:
 
 
 def is_relevant_URL(s:str)->bool:
-    return is_a_URL(s) and (is_bloom_URL(s) or is_restech_URL(s))
+    return re.search(r'\.ac\.uk$') and (is_bloom_URL(s) or is_restech_URL(s))
     
 
 def is_bloom_URL(s:str)->bool:
-    return any(filter(lambda x: re.search(re.escape(x), s), bloom_words()))
+    return re.search(r'bloom|vle|moodle|ble', s)
     
 
 def is_restech_URL(s:str)->bool:
-    return any(filter(lambda x: re.search(re.escape(x), s), restech_words()))
+    return re.search(r'eprint|research|researchdata|repository|open|access|publications|data'
+, s)
 
-'''
-Returns a list of Moodle-related words that are often used in URLs
-TODO: Expand list!
-'''
-def bloom_words()->List[str]:
-    return['bloom','vle','moodle','ble']
-
-
-'''
-Returns a list of Open Access repository-related words that are often used in URLs
-TODO: Expand list!
-'''
-def restech_words()->List[str]:
-    return[
-            'eprint',
-            'research',
-            'researchdata',
-            'repository', 
-            'open', 
-            'access',
-            'publications',
-            'data'
-            ]
 
 
 '''
@@ -220,7 +200,11 @@ def remove_URLs(s_list:List[str])->List[str]:
 
 
 '''
+Removes residual URLs (which for some reason were not removed in previous steps)
 '''
+def remove_residual_URLs(s_list:List[str])->List[str]:
+    is_residual_URL = lambda x: re.search(r'^www',x) or re.search(r'acuk$',x)
+    return remove_if(is_residual_URL, s_list)
 
 '''
 Removes English stopwords from a list of strings
@@ -244,7 +228,7 @@ Wrapper of the WordNet lemmatizer to be used in the pipeline.
 Lemmatises the words using the pos_mapper helper function below.
 '''
 def lemmatize_all(s_list:List[str])->List[str]:
-    lem = nltk.WordNetLemmatizer()
+    lem = _LEMMATISER
     return [lem.lemmatize(x, wordnet_pos_mapper(x)) for x in s_list]
 
 
