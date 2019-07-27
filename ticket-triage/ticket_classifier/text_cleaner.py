@@ -97,7 +97,7 @@ def remove_strings_starting_with_numbers(s_list:List[str])->List[str]:
 Removes all punctuation from the words in a list of strings
 '''
 def remove_punctuation(s_list:List[str])->List[str]:
-    return [x.translate(str.maketrans("", "", string.punctuation)) for x in s_list]
+    return [x.translate(str.maketrans(" ", " ", string.punctuation)) for x in s_list]
 
 '''
 Removes non-ascii characters. MIght be too aggressive
@@ -168,7 +168,7 @@ def turn_into_tag(s:str)->str:
 
 
 def is_relevant_URL(s:str)->bool:
-    return re.search(r'\.ac\.uk$') and (is_bloom_URL(s) or is_restech_URL(s))
+    return re.search(r'\.ac\.uk$', s) and (is_bloom_URL(s) or is_restech_URL(s))
     
 
 def is_bloom_URL(s:str)->bool:

@@ -104,7 +104,7 @@ if __name__ == '__main__':
     vect_field = 'description' # ie: the column use to fit the vectoriser
     vect_pickle_filename = dump_fitted_vectoriser_to_pickle(vect_field,full_dataset[vect_field])
     vect = pickle.load(open(vect_pickle_filename, "rb")) # the TfIdf vectoriser
-    field_list = ['summary','description']
+    field_list = ['description']
     dump_all_vectorised_data_to_pickle(vect, full_dataset, field_list)
     
     print("All vectorised data was dumped to pickle files!")

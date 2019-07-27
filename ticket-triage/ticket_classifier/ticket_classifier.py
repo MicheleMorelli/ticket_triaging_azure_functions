@@ -31,13 +31,13 @@ if __name__ == '__main__':
         
         # ===============================================================
         #training accuracy tests
-        prediction = classifier.predict(test_data)
+        #prediction = classifier.predict(test_data)
         #report = metrics.classification_report(test_target, prediction)
-        accuracy = metrics.accuracy_score(test_target, prediction)
-        print(f"TARGET LABEL {fieldname.upper()}:")
-        print(f"Accuracy: {round(accuracy*100,2)}%")
+        #accuracy = metrics.accuracy_score(test_target, prediction)
+        #print(f"TARGET LABEL {fieldname.upper()}:")
+        #print(f"Accuracy: {round(accuracy*100,2)}%")
         #=================================================================
 
-        #new_ticket = ["the fields of our repository are broken"]
-        #prediction = classifier.predict(vect.transform(new_ticket))
-        #print(f"TARGET LABEL {fieldname.upper()}: => {prediction[0]}")
+        new_ticket = ["contract expiring"]
+        prediction = classifier.predict(vect.transform(new_ticket))
+        print(f"TARGET LABEL {fieldname.upper()}: => {prediction[0]}")
