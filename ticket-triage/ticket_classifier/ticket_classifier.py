@@ -7,12 +7,16 @@ from sklearn import metrics
 import pickle
 from dataset_vectoriser import import_dataset_from_csv_as_panda_dataframe as get_dataset
 from dataset_vectoriser import convert_pd_series_with_NaN_to_string_list as get_as_str_list
+import time
+import os
 import sys
 sys.path.append('../')
 from helper import importer as conf
 
-PICKLE_PATH= conf.get_config("pickle_files","pickle_path")
 
+
+PICKLE_PATH= conf.get_config("pickle_files","pickle_path")
+PICKLE_CLASSIFIER_PATH = f"{PICKLE_PATH}/classifiers"
 
 
 def get_vectoriser():
@@ -30,10 +34,17 @@ def get_vectorised_dataset():
 def split_train_test_model(full_dataset, fieldnames:List[str]):
     vect = get_vectoriser()
     vectorised_dataset = get_vectorised_dataset()
+    # create directory for pickled classifiers
+    CLASSIFIER_DIRNAME = f"{PICKLE_CLASSIFIER_PATH}/{time.strftime('%Y%m%d_%H%M')}"
+    if not os.path.exists(CLASSIFIER_DIRNAME):
+            os.makedirs(CLASSIFIER_DIRNAME)
     for fieldname in fieldnames:
         target_class = get_as_str_list(full_dataset[fieldname])
         training_data, test_data, training_target, test_target = train_test_split(vectorised_dataset, target_class, test_size = 0.25)
         classifier = MultinomialNB().fit(training_data, training_target)
+
+        #dump this classifier in the pickle dir
+        pickle.dump(classifier, open(f"{CLASSIFIER_DIRNAME}/{fieldname}_classifier.pickle",'wb'))
         
         # ===============================================================
         #training accuracy tests
