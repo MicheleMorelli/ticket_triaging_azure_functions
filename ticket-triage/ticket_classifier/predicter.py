@@ -5,8 +5,8 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 import pickle
-from dataset_vectoriser import import_dataset_from_csv_as_panda_dataframe as get_dataset
-from dataset_vectoriser import convert_pd_series_with_NaN_to_string_list as get_as_str_list
+from ticket_classifier.dataset_vectoriser import import_dataset_from_csv_as_panda_dataframe as get_dataset
+from ticket_classifier.dataset_vectoriser import convert_pd_series_with_NaN_to_string_list as get_as_str_list
 import time
 import os
 import sys

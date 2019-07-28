@@ -13,7 +13,7 @@ from typing import Dict, List
 import pickle
 import time
 
-import text_cleaner as tc
+import ticket_classifier.text_cleaner as tc
 import sys
 sys.path.append('../')
 from helper import importer as conf
