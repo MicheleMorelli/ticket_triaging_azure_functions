@@ -1,3 +1,4 @@
+from typing import List,Dict
 import pandas as pd
 import numpy as np
 from sklearn.naive_bayes import MultinomialNB
@@ -11,23 +12,28 @@ sys.path.append('../')
 from helper import importer as conf
 
 PICKLE_PATH= conf.get_config("pickle_files","pickle_path")
-PICKLE_VECTORISER=conf.get_config('pickle_files','vectoriser')
-PICKLE_VECTORISED_DATASET=conf.get_config('pickle_files','vectorised_dataset')
 
-if __name__ == '__main__':
-    full_dataset = get_dataset(conf.get_config('classifier_datasets','full_dataset'))
-    fieldnames = ['board_name', "type_name", "subtype_name","product", "product_area"]
-    
-    vect_pickle_filename = f"{PICKLE_PATH}/{PICKLE_VECTORISER}"
-    vect = pickle.load(open(vect_pickle_filename, "rb"))
-    features_pickle_filename = f"{PICKLE_PATH}/{PICKLE_VECTORISED_DATASET}"
-    vectorised_dataset = pickle.load(open(features_pickle_filename, "rb"))
-    
+
+
+def get_vectoriser():
+    PICKLE_VECTORISER=conf.get_config('pickle_files','vectoriser')
+    VECT_FILENAME = f"{PICKLE_PATH}/{PICKLE_VECTORISER}"
+    return pickle.load(open(VECT_FILENAME, "rb"))
+
+
+def get_vectorised_dataset():
+    PICKLE_VECTORISED_DATASET=conf.get_config('pickle_files','vectorised_dataset')
+    FEATURES_FILENAME = f"{PICKLE_PATH}/{PICKLE_VECTORISED_DATASET}"
+    return pickle.load(open(FEATURES_FILENAME, "rb"))
+
+
+def split_train_test_model(full_dataset, fieldnames:List[str]):
+    vect = get_vectoriser()
+    vectorised_dataset = get_vectorised_dataset()
     for fieldname in fieldnames:
         target_class = get_as_str_list(full_dataset[fieldname])
         training_data, test_data, training_target, test_target = train_test_split(vectorised_dataset, target_class, test_size = 0.25)
         classifier = MultinomialNB().fit(training_data, training_target)
-        # Vectoriser
         
         # ===============================================================
         #training accuracy tests
@@ -41,3 +47,9 @@ if __name__ == '__main__':
         new_ticket = ["contract expiring"]
         prediction = classifier.predict(vect.transform(new_ticket))
         print(f"TARGET LABEL {fieldname.upper()}: => {prediction[0]}")
+
+
+if __name__ == '__main__':
+    full_dataset = get_dataset(conf.get_config('classifier_datasets','full_dataset'))
+    fieldnames = ['board_name', "type_name", "subtype_name","product", "product_area"]
+    split_train_test_model(full_dataset,fieldnames)
