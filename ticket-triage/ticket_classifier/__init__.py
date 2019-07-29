@@ -46,7 +46,7 @@ def update_tickets(ticket:str):
     for label in prediction:
         message += f"\n{label} => {prediction[label]}\n"
     body = {
-            "state_id":2,
+            "state_id":8,
             "article":{
                 "body":message, 
                 "type":"note", 
