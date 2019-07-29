@@ -4,7 +4,7 @@ from typing import Dict, List, Any
 import azure.functions as func
 import requests
 from helper import importer as di # Dependency injection via configuration
-from predicter.predicter import predict_ticket_labels as predict
+from predicter import predict_ticket_labels as predict
 
 TS = di.import_ticketing_system()
 
@@ -46,13 +46,14 @@ Updates the ticket passed as an argument
 def update_tickets(ticket:str):
     fieldnames = ['board_name', "type_name", "subtype_name","product", "product_area"]
     message = ""
-    for label in predict("This is a test", fieldnames):
-        pass
+    prediction = predict("Eprints repository problem!", fieldnames)
+    for label in prediction:
+        message += f'{label} => {prediction[label]}'
 
     # Changing the state to "open" (state_id: 2)
     #body = '{"state_id":2, "article":{"body":"I have been updated from Azure functions!","type":"note","internal":false}}'
     # without changing the state
-    body = '{"article":{"body":"I have been updated from Azure functions!","type":"note","internal":false}}'
+    body = '{"article":{"body":"sdfsdfsdfsdfs","type":"note","internal":false}}'
     put = getattr(TS,'put_to_ticketing_system')
     return put(f"tickets/{ticket}", body)
 
