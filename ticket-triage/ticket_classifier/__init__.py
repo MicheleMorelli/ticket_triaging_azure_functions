@@ -4,7 +4,7 @@ from typing import Dict, List, Any
 import azure.functions as func
 import requests
 from helper import importer as di # Dependency injection via configuration
-from ticket_classifier.predicter import predict_ticket_labels as predict
+from predicter.predicter import predict_ticket_labels as predict
 
 TS = di.import_ticketing_system()
 
