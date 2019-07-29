@@ -11,16 +11,12 @@ TS = di.import_ticketing_system()
 def main(req: func.HttpRequest) -> func.HttpResponse:
     
     logging.info('It looks like that I received some tickets!')
-    content = req.get_json()
-    num = content["tickets_count"]
-    assets = [x for x in content['assets']] # each x is a string
-    tickets = sorted([x for x in content['assets']['Ticket']]) # each x is a string
-    titles = [get_ticket_info(content, x, 'title') for x in tickets]
+    tickets = req.get_json()
+    titles = [x['summary'] for x in tickets]
     updates = list(map(lambda x: update_tickets(x), tickets))
 
     return func.HttpResponse(
-         f"\n\nI found {num} new tickets\nthe assets are {assets}"
-         f"\nThe tickets are {list(zip(tickets,titles))}"
+         f"\n\nI found {len(tickets)} new tickets\nthe assets are {[x['ticket_id'] for x in tickets]}"
          f"\nUPDATES: {updates}",
          status_code=200
     )
@@ -46,14 +42,17 @@ Updates the ticket passed as an argument
 def update_tickets(ticket:str):
     fieldnames = ['board_name', "type_name", "subtype_name","product", "product_area"]
     message = ""
-    prediction = predict("Eprints repository problem!", fieldnames)
+    prediction = predict(ticket['description'], fieldnames)
     for label in prediction:
-        message += f'{label} => {prediction[label]}'
-
-    # Changing the state to "open" (state_id: 2)
-    #body = '{"state_id":2, "article":{"body":"I have been updated from Azure functions!","type":"note","internal":false}}'
-    # without changing the state
-    body = '{"article":{"body":"sdfsdfsdfsdfs","type":"note","internal":false}}'
+        message += f"\n{label} => {prediction[label]}\n"
+    body = {
+            "state_id":2,
+            "article":{
+                "body":message, 
+                "type":"note", 
+                "internal":False
+                }
+            }
     put = getattr(TS,'put_to_ticketing_system')
-    return put(f"tickets/{ticket}", body)
+    return put(f"tickets/{ticket['ticket_id']}", json.dumps(body))
 
