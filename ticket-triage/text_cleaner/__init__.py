@@ -1,7 +1,8 @@
-import nltk
 import re
 import string
-from typing import List, Dict
+import typing # for TypeAliases/pseudotypes such as Match
+from typing import *
+import nltk
 from toolz import pipe
 
 _LEMMATISER = nltk.WordNetLemmatizer()
@@ -169,21 +170,21 @@ def turn_into_tag(s:str)->str:
     return "BLOOMPOTENTIALURL" if is_bloom_URL(s) else "RESTECHPOTENTIALURL"
 
 
-def is_relevant_URL(s:str)->bool:
+def is_relevant_URL(s:str)-> Union[typing.Match[str], None, bool]:
     return re.search(r'\.ac\.uk$', s) and (is_bloom_URL(s) or is_restech_URL(s))
     
 
-def is_bloom_URL(s:str)->bool:
+def is_bloom_URL(s:str)-> Optional[typing.Match[str]]:
     return re.search(r'bloom|vle|moodle|ble', s)
     
 
-def is_restech_URL(s:str)->bool:
+def is_restech_URL(s:str)->Optional[typing.Match[str]]:
     return re.search(r'eprint|research|researchdata|repository|open|access|publications|data'
 , s)
 
 
 
-def is_a_URL(s:str)->bool:
+def is_a_URL(s:str)->Optional[typing.Match[str]]:
     '''
     Checks if a string is a URL
     Using regex found at 
