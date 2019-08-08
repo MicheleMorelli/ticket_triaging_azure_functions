@@ -30,6 +30,16 @@ def test_functional_cleaner():
     assert tc.functional_cleaner(desc) == ["preposterous"]
 
 
+def test_functional_cleaner2():
+    desc = "I am experiencing a problem with www.mybloomvle.ac.uk"
+    assert tc.functional_cleaner(desc) == ["experience","problem", "BLOOMPOTENTIALURL"]
+
+
+def test_functional_cleaner3():
+    desc = "www.google.com is not working. Could you please look into it?"
+    assert tc.functional_cleaner(desc) == ["work", "could", "please","look"]
+
+
 def test_is_a_URL():
     pass
 
