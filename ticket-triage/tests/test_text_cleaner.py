@@ -26,7 +26,8 @@ def test_remove_numbers():
     assert tc.remove_numbers(lst_str) == ["test1", "\\x43", "r3242342"]
 
 def test_functional_cleaner():
-    pass
+    desc = "this is preposterous!"
+    assert tc.functional_cleaner(desc) == ["preposterous"]
 
 
 def test_is_a_URL():
@@ -49,27 +50,11 @@ def test_lemmatize_all():
     pass
 
 
-def test_nltk():
-    pass
-
-
 def test_no_type_check():
     pass
 
 
 def test_no_type_check_decorator():
-    pass
-
-
-def test_overload():
-    pass
-
-
-def test_pipe():
-    pass
-
-
-def test_re():
     pass
 
 
@@ -101,10 +86,6 @@ def test_remove_non_printable_hex():
     pass
 
 
-def test_remove_numbers():
-    pass
-
-
 def test_remove_punctuation():
     pass
 
@@ -117,12 +98,9 @@ def test_remove_stopwords():
     pass
 
 
-def test_remove_strings_containing_any_numbers():
-    pass
-
-
 def test_remove_strings_starting_with_numbers():
-    pass
+    lst_str = ["test1", "a4", "3test"]
+    assert tc.remove_strings_starting_with_numbers(lst_str) == ["test1", "a4"]
 
 
 def test_remove_ticket_references():
@@ -138,10 +116,6 @@ def test_remove_very_long_words():
 
 
 def test_remove_very_short_words():
-    pass
-
-
-def test_string():
     pass
 
 
