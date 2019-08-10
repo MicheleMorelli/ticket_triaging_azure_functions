@@ -6,29 +6,29 @@ to run it every 15 seconds with the watch command:
 watch -n 15 -d python3 poll_new_tickets.py
 '''
 
-from typing import List, Dict, Any, Tuple
-import connector as zamreq
+from typing import *
 import os
 import json
 import requests
 import time
+import connector as zamreq
 
-'''
-Returns all the tickets in the ticketing system that are marked as 'new'
-'''
 def get_new_tickets_from_ticketing_system_as_json() -> str:
+    '''
+    Returns all the tickets in the ticketing system that are marked as 'new'
+    '''
     return json.dumps(
             zamreq.get_from_ticketing_system("tickets/search?query=state%3Anew").json())
  
 
-'''
-Takes the json file about the open tickets, and returns a list of dictionaries
-that contain the relevant information about the open tickets:
--initial description,
--id, 
--summary
-'''
-def assemble_relevant_ticket_list(tickets:str)->List[Dict[str,Any]]:
+def assemble_relevant_ticket_list(tickets: str) -> List[Dict[str,Any]]:
+    '''
+    Takes the json file about the open tickets, and returns a list of dictionaries
+    that contain the relevant information about the open tickets:
+    -initial description,
+    -id, 
+    -summary
+    '''
     tickets = json.loads(tickets)
     ticket_list = []
     for ticket in tickets['tickets']:
@@ -45,10 +45,10 @@ def assemble_relevant_ticket_list(tickets:str)->List[Dict[str,Any]]:
     return ticket_list
 
 
-'''
-Makes a POST request to the azure function
-'''
-def post_to_azure(payload:str) -> requests.models.Response:
+def post_to_azure(payload: str) -> requests.models.Response:
+    '''
+    Makes a POST request to the azure function
+    '''
     content_type = 'application/json'
     uri = get_azure_uri()
     print(payload)
@@ -57,17 +57,17 @@ def post_to_azure(payload:str) -> requests.models.Response:
     return req
 
 
-'''
-Returns the Azure URI
-'''
-def get_azure_uri()->str:
+def get_azure_uri() -> Optional[str]:
+    '''
+    Returns the Azure URI
+    '''
     return os.getenv('AZURE_CLASSIFIER_URI')
 
 
-'''
-Sends all the new tickets to Azure for processing.
-'''
-def main()->None:
+def main() -> None:
+    '''
+    Sends all the new tickets to Azure for processing.
+    '''
     tickets = get_new_tickets_from_ticketing_system_as_json()
     retrieved_tickets = assemble_relevant_ticket_list(tickets)
     if not retrieved_tickets:
