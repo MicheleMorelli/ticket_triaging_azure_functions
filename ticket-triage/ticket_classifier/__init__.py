@@ -1,3 +1,7 @@
+"""
+This is the main script tyhat composes the Azure Functions application.
+"""
+
 import logging
 import json
 from typing import Dict, List, Any
@@ -22,31 +26,17 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     )
 
 
-'''
-Returns a certain attricute related to a certain ticket
-'''
-def get_ticket_info(content: Dict[str,str], ticketid:str, attrib: str) -> str:
-    return get_zammad_tickets(content)[ticketid][attrib] 
-
-
-'''
-Returns the Zammad-specific path to get to the tickets in the request message.
-This is useful when the polling system is used instead of webhooks.
-'''
-def get_zammad_tickets(content: Dict[str,str]) -> Dict[str,str]:
-    return content['assets']['Ticket']
-
-'''
-Updates the ticket passed as an argument
-'''
-def update_tickets(ticket:str):
+def update_tickets(ticket: str):
+    """
+    Updates the ticket that was passed as an argument
+    """
     fieldnames = ['board_name', "type_name", "subtype_name","product", "product_area"]
     message = ""
     prediction = predict(ticket['description'], fieldnames)
     for label in prediction:
         message += f"\n{label} => {prediction[label]}\n"
     body = {
-            "state_id":8,
+            "state_id":8, # State 8 is the custom 'triaged' state on Zammad
             "article":{
                 "body":message, 
                 "type":"note", 
