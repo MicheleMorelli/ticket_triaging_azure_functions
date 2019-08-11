@@ -57,7 +57,7 @@ def post_to_azure(payload: str) -> requests.models.Response:
     return req
 
 
-def get_azure_uri() -> Optional[str]:
+def get_azure_uri() -> str:
     '''
     Returns the Azure URI
     '''
