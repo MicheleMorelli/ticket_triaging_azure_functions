@@ -34,6 +34,20 @@ def put_to_ticketing_system(endpoint:str, payload:str) -> requests.models.Respon
     return req
 
 
+def get_updated_ticket_payload(message: str) -> Dict[str, Any]:
+    """
+    Returns the ticketing system-specific payload to upload the ticket
+    """
+    return {
+            "state_id":8, # State 8 is the custom 'triaged' state on Zammad
+            "article":{
+                "body":message,
+                "type":"note",
+                "internal":False
+                }
+            }
+
+
 def get_ticketing_system_usr_key_uri(endpoint:str) -> Tuple[str]:
     usr = get_ticketing_system_username()
     key = get_ticketing_system_key()
