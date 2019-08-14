@@ -4,6 +4,7 @@ dependency injection to keep the app flexible and ticketing-system independent.
 '''
 import importlib
 from importlib import util
+from typing import List, Dict, Any
 import configparser
 import sys
 import os
@@ -22,9 +23,7 @@ def import_from_string(module_name:str):
     return importlib.import_module(connector,package="connector")
 
 
-
-
-def import_from_config(section:str, key:str):
+def import_from_config(section:str, key:str) -> str:
     conf = configparser.ConfigParser()
     conf.read(__CONF_FILE)
     print(f"CONF FILE FOUND AT: {__CONF_FILE}")
@@ -32,6 +31,16 @@ def import_from_config(section:str, key:str):
         print(fh.readlines())
     print(conf.sections())
     return import_from_string( conf[section][key])
+
+
+def import_config_list(section:str, key:str) -> List[str]:
+    """
+    Imports a list of strings from the config file. The strings 
+    in the config file must be comma separated, with no white space between 
+    them.
+    """
+    return import_from_config(section,key).split(",") 
+
 
 '''
 Returns the value of a config string.
