@@ -29,10 +29,11 @@ def update_tickets(ticket: str) -> str:
     """
     Updates the ticket that was passed as an argument
     """
-    #fieldnames = ['board_name', "type_name", "subtype_name","product", "product_area"]
     fieldnames = di.import_config_list("azure_classifier", "target_fieldnames",",")
     message = ""
-    prediction = predict(ticket['description'], fieldnames)
+    prediction = predict(
+            ticket[di.get_config("azure_classifier", "field_for_prediction")], 
+            fieldnames)
     for label in prediction:
         message += f"\n{label} => {prediction[label]}\n"
     body = TS.get_updated_ticket_payload(message) 
