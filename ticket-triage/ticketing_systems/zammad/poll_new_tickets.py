@@ -1,5 +1,5 @@
 '''
-This small script simluates a DAEMON process that checks whether new tickets have been 
+This small script implements a polling process that checks whether new tickets have been 
 raised on the ticketing system, and sends them to the classifier on Azure
 
 to run it every 15 seconds with the watch command:
@@ -66,7 +66,8 @@ def get_azure_uri() -> str:
 
 def main() -> None:
     '''
-    Sends all the new tickets to Azure for processing.
+    Fetches all the newly created tickets from the ticketing system, 
+    and sends them to Azure for processing.
     '''
     tickets = get_new_tickets_from_ticketing_system_as_json()
     retrieved_tickets = assemble_relevant_ticket_list(tickets)

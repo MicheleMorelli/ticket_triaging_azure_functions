@@ -1,6 +1,8 @@
 """
 The abstract Ticketing System Interface (TSI), which indicates all the 
 functions that must be implemented by its concrete implementations.
+The compulsory methods must be implemented in the concrete implementation's 
+connector.py package.  
 """
 
 

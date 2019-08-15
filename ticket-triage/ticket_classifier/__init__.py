@@ -29,7 +29,10 @@ def update_tickets(ticket: str) -> str:
     """
     Updates the ticket that was passed as an argument
     """
-    fieldnames = di.import_config_list("azure_classifier", "target_fieldnames",",")
+    fieldnames = di.import_config_list(
+            "azure_classifier", 
+            "target_fieldnames",
+            ",")
     message = ""
     prediction = predict(
             ticket[di.get_config("azure_classifier", "field_for_prediction")], 

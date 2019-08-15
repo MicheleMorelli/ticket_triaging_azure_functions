@@ -22,10 +22,10 @@ def post_to_ticketing_system(endpoint:str, payload:str) -> requests.models.Respo
     return req
 
 
-'''
-used to update an entity on the ticketing system
-'''
 def put_to_ticketing_system(endpoint:str, payload:str) -> requests.models.Response:
+    """
+    Used to update an entity on the ticketing system via a PUT request.
+    """
     content_type = 'application/json'
     (usr,key,uri) = get_ticketing_system_usr_key_uri(endpoint)
     print(f"REQ URI IS {uri}")
@@ -36,7 +36,7 @@ def put_to_ticketing_system(endpoint:str, payload:str) -> requests.models.Respon
 
 def get_updated_ticket_payload(message: str) -> Dict[str, Any]:
     """
-    Returns the ticketing system-specific payload to upload the ticket
+    Returns the ticketing system-specific payload to update the ticket.
     """
     return {
             "state_id":8, # State 8 is the custom 'triaged' state on Zammad
@@ -55,15 +55,15 @@ def get_ticketing_system_usr_key_uri(endpoint:str) -> Tuple[str]:
     return (usr,key,uri)
 
 
-def get_ticketing_system_username():
+def get_ticketing_system_username() -> str:
     return os.getenv('ZAMMAD_USERNAME')
 
 
-def get_ticketing_system_key():
+def get_ticketing_system_key() -> str:
     return os.getenv('ZAMMAD_KEY')
 
 
-def get_ticketing_system_uri():
+def get_ticketing_system_uri() -> str:
     return os.getenv('ZAMMAD_URI')
 
 
