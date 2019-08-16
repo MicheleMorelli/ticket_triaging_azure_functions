@@ -13,25 +13,35 @@ import time
 import os
 from helper import importer as conf
 
-
-
 PICKLE_PATH= conf.get_config("pickle_files","pickle_path")
 PICKLE_CLASSIFIER_PATH = f"{PICKLE_PATH}/classifiers"
 
 
 def get_vectoriser():
+    """
+    Retrieves the pickled vectoriser which (indicated in the config file.)
+    """
     PICKLE_VECTORISER=conf.get_config('pickle_files','vectoriser')
     VECT_FILENAME = f"{PICKLE_PATH}/{PICKLE_VECTORISER}"
     return pickle.load(open(VECT_FILENAME, "rb"))
 
 
 def get_vectorised_dataset():
+    """
+    Retrieves the pickled vectorised dataset which 
+    (indicated in the config file.)
+    """
     PICKLE_VECTORISED_DATASET=conf.get_config('pickle_files','vectorised_dataset')
     FEATURES_FILENAME = f"{PICKLE_PATH}/{PICKLE_VECTORISED_DATASET}"
     return pickle.load(open(FEATURES_FILENAME, "rb"))
 
 
-def split_train_test_model(full_dataset, fieldnames:List[str]):
+def split_train_test_model(full_dataset, fieldnames: List[str]) -> None:
+    """
+    Provided with a dataset, this function splits the dataset
+    (75% training, 25% testing), trains the classifier, tests
+    its accuracy and stores the classifier as a .pickle file.
+    """
     vect = get_vectoriser()
     vectorised_dataset = get_vectorised_dataset()
     # create directory for pickled classifiers
@@ -54,8 +64,11 @@ def split_train_test_model(full_dataset, fieldnames:List[str]):
         #=================================================================
 
 
-
-def predict_ticket_labels(description:str, target_fields:List[str])->Dict[str,str]:
+def predict_ticket_labels(description: str, target_fields: List[str]) -> Dict[str,str]:
+    """
+    This function takes the classifier indicated in the conf.ini
+    file, and produces a prediction over a given target set of fields.
+    """
     labels = {}
     vect = get_vectoriser()
     for field in target_fields:
@@ -67,7 +80,6 @@ def predict_ticket_labels(description:str, target_fields:List[str])->Dict[str,st
             prediction = classifier.predict(vect.transform([description]))
             labels[field] = prediction[0]
     return labels
-
 
 
 if __name__ == '__main__':
