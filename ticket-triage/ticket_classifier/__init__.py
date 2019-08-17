@@ -7,7 +7,7 @@ import json
 from typing import Dict, List, Any, Union
 import azure.functions as func
 import requests
-import importer as di # Dependency injection via configuration
+import configuration as di # Dependency injection via configuration
 from predicter import predict_ticket_labels as predict
 
 TS = di.import_ticketing_system()

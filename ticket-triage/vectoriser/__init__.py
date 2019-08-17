@@ -16,7 +16,7 @@ import sys
 sys.path.append('./')
 
 import text_cleaner as tc
-import importer as conf
+import configuration as conf
 
 PICKLE_PATH= conf.get_config("pickle_files","pickle_path")
 

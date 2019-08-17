@@ -63,4 +63,4 @@ def import_ticketing_system() -> types.ModuleType:
 
 if __name__ == '__main__':
     #print(type(import_ticketing_system()))
-    #print(get_config("classifier_datasets", "csv_path"))
+    print(get_config("classifier_datasets", "csv_path"))

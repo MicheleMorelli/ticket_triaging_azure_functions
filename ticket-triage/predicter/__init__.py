@@ -11,7 +11,7 @@ from vectoriser import import_dataset_from_csv_as_panda_dataframe as get_dataset
 from vectoriser import convert_pd_series_with_NaN_to_string_list as get_as_str_list
 import time
 import os
-import importer as conf
+import configuration as conf
 
 PICKLE_PATH= conf.get_config("pickle_files","pickle_path")
 PICKLE_CLASSIFIER_PATH = f"{PICKLE_PATH}/classifiers"
