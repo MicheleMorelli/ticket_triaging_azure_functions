@@ -1,6 +1,7 @@
 """
-A helper package that allows to import modules dynamically, and to perform 
-dependency injection to keep the app flexible and ticketing-system independent.
+A helper package that allows to read values from the conf.ini file, 
+import modules dynamically, and to perform dependency injection to 
+keep the app flexible and ticketing-system independent.
 """
 import importlib
 from importlib import util
@@ -11,7 +12,7 @@ import sys
 import os
 
 __IMPORTER_PATH = os.path.dirname(__file__)
-__CONF_FILE = os.path.join(__IMPORTER_PATH, '../conf/conf.ini')
+__CONF_FILE = os.path.join(__IMPORTER_PATH, 'conf.ini')
 __PATH_TO_TICKETING_SYS = os.path.join(__IMPORTER_PATH, '../ticketing_systems')
 
 def import_from_string(module_name: str) -> types.ModuleType:
@@ -60,9 +61,6 @@ def import_ticketing_system() -> types.ModuleType:
     return import_from_config('ticketing_system','name')
 
 
-def main():
-    #print(type(import_ticketing_system()))
-    print(get_config("classifier_datasets", "csv_path"))
-
 if __name__ == '__main__':
-    main()
+    #print(type(import_ticketing_system()))
+    #print(get_config("classifier_datasets", "csv_path"))
