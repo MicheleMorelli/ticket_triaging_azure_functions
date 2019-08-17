@@ -5,6 +5,7 @@ dependency injection to keep the app flexible and ticketing-system independent.
 import importlib
 from importlib import util
 from typing import List, Dict, Any
+import types
 import configparser
 import sys
 import os
@@ -13,12 +14,9 @@ __IMPORTER_PATH = os.path.dirname(__file__)
 __CONF_FILE = os.path.join(__IMPORTER_PATH, '../conf/conf.ini')
 __PATH_TO_TICKETING_SYS = os.path.join(__IMPORTER_PATH, '../ticketing_systems')
 
-"""
-Allows to import a module dynamically by indicating its name as a string
-"""
-def import_from_string(module_name:str):
+def import_from_string(module_name: str) -> types.ModuleType:
     """
-    Given a string, it imports a module.
+    Allows to import a module dynamically by indicating its name as a string
     """
     print(f"IMPORTING FROM {module_name}")
     sys.path.insert(0,__PATH_TO_TICKETING_SYS)
@@ -26,7 +24,7 @@ def import_from_string(module_name:str):
     return importlib.import_module(connector,package="connector")
 
 
-def import_from_config(section:str, key:str) -> str:
+def import_from_config(section: str, key: str) -> types.ModuleType:
     """
     Imports a module from config
     """
@@ -39,14 +37,14 @@ def import_from_config(section:str, key:str) -> str:
     return import_from_string( conf[section][key])
 
 
-def import_config_list(section:str, key:str, separator: str) -> List[str]:
+def import_config_list(section: str, key: str, separator: str) -> List[str]:
     """
     Imports a list of strings from the config file.
     """
     return get_config(section,key).split(separator) 
 
 
-def get_config(section:str, key:str)->str:
+def get_config(section: str, key: str) -> str:
     """
     Returns the value of a config string.
     """
@@ -54,7 +52,7 @@ def get_config(section:str, key:str)->str:
     conf.read(__CONF_FILE)
     return conf[section][key]
 
-def import_ticketing_system():
+def import_ticketing_system() -> types.ModuleType:
     """
     Imports a module related to a concrete implementation of a ticketing 
     system.
