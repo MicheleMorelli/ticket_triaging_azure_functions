@@ -33,7 +33,12 @@ def update_tickets(ticket: str) -> str:
             "azure_classifier", 
             "target_fieldnames",
             ",")
+    
     message = ""
+    # !! FOR TESTING
+    import datetime
+    message += f"{datetime.datetime.now()}\nTEST- Original Message:\n{ticket['description']}\n\n"
+    # !! END OF TESTING
     prediction = predict(
             ticket[di.get_config("azure_classifier", "field_for_prediction")], 
             fieldnames)

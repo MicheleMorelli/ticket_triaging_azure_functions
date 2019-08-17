@@ -17,7 +17,9 @@ __PATH_TO_TICKETING_SYS = os.path.join(__IMPORTER_PATH, '../ticketing_systems')
 
 def import_from_string(module_name: str) -> types.ModuleType:
     """
-    Allows to import a module dynamically by indicating its name as a string
+    Returns the connector.py package from the TS module 
+    (specified in the configuration file) dynamically 
+    by indicating the module's name as a string.
     """
     print(f"IMPORTING FROM {module_name}")
     sys.path.insert(0,__PATH_TO_TICKETING_SYS)
