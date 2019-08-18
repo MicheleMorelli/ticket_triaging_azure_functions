@@ -69,6 +69,7 @@ def main() -> None:
     Fetches all the newly created tickets from the ticketing system, 
     and sends them to Azure for processing.
     '''
+    starttime = time.time()
     tickets = get_new_tickets_from_ticketing_system_as_json()
     retrieved_tickets = assemble_relevant_ticket_list(tickets)
     if not retrieved_tickets:
@@ -78,6 +79,7 @@ def main() -> None:
     resp = post_to_azure(payload)
     print(resp)
     print(resp.text)
+    print(f"Execution time (seconds): {time.time() - starttime}")
 
 
 if (__name__ == "__main__"):
