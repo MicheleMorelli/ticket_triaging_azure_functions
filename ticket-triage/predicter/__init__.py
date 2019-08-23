@@ -84,7 +84,10 @@ def predict_ticket_labels(description: str, target_fields: List[str]) -> Dict[st
 
 if __name__ == '__main__':
     full_dataset = get_dataset(conf.get_config('classifier_datasets','full_dataset'))
-    fieldnames = ['board_name', "type_name", "subtype_name","product", "product_area"]
+    fieldnames = conf.import_config_list(
+            "azure_classifier",
+            "target_fieldnames",
+            ",")
     test_ticket = '''
     Hi, 
     our Eprints repository does not work anymore.
@@ -93,7 +96,7 @@ if __name__ == '__main__':
     '''
     
     # Uncomment the next line to train and test the model
-    #split_train_test_model(full_dataset,fieldnames)
+    split_train_test_model(full_dataset,fieldnames)
     
     #uncomment the next line to test the new ticket prediction
-    print(predict_ticket_labels(test_ticket,fieldnames))
+    #print(predict_ticket_labels(test_ticket,fieldnames))
