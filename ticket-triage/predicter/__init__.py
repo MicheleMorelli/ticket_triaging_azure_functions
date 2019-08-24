@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
 from sklearn import metrics
 import pickle
 import sys
@@ -36,7 +37,16 @@ def get_vectorised_dataset():
     return pickle.load(open(FEATURES_FILENAME, "rb"))
 
 
-def split_train_test_model(full_dataset, fieldnames: List[str]) -> None:
+def get_classifier(field: str) -> MultinomialNB:
+    """
+    Retrieves the pickled classifier that is indicated in the config
+    """
+    classifier_dir = conf.get_config('pickle_files','current_classifier')
+    classifier_name = f"{PICKLE_CLASSIFIER_PATH}/{classifier_dir}/{field}_classifier.pickle"
+    return pickle.load(open(classifier_name, "rb"))
+
+
+def create_and_test_model(full_dataset, fieldnames: List[str]) -> None:
     """
     Provided with a dataset, this function splits the dataset
     (75% training, 25% testing), trains the classifier, tests
@@ -59,9 +69,42 @@ def split_train_test_model(full_dataset, fieldnames: List[str]) -> None:
         prediction = classifier.predict(test_data)
         #report = metrics.classification_report(test_target, prediction)
         accuracy = metrics.accuracy_score(test_target, prediction)
+        kfold_F1_score = metrics.f1_score(test_target, prediction, average='weighted')
         print(f"TARGET LABEL {fieldname.upper()}:")
         print(f"Accuracy: {round(accuracy*100,2)}%")
+        print(f"f1-score (K fold): {round(kfold_F1_score*100,2)}%")
         #=================================================================
+
+
+def test_existing_classifier(full_dataset, fieldnames: List[str]) -> None:
+    """
+    Prints the scores of both K-fold cross-validation and k-splits validation
+    """
+    import warnings
+    warnings.filterwarnings('ignore') 
+    vectorised_dataset = get_vectorised_dataset()
+    print("K-Folds VALIDATION METRICS:")
+    for fieldname in fieldnames:
+        target_class = get_as_str_list(full_dataset[fieldname])
+        accuracy = cross_val_score(get_classifier(fieldname), vectorised_dataset, target_class, cv=5)
+        f1_score = cross_val_score(get_classifier(fieldname), vectorised_dataset, target_class, cv=5, scoring="f1_weighted")
+        print(f"TARGET LABEL {fieldname.upper()}:")
+        print(f"Accuracy: {round(accuracy.mean() *100,2)}%")
+        print(f"F1-score: {round(f1_score.mean() *100,2)}%")
+    
+    print("\n\n"+ ("=" * 20) + "\n\n:")
+    print("Train-test METRICS:")
+    for fieldname in fieldnames:
+        target_class = get_as_str_list(full_dataset[fieldname])
+        classifier = get_classifier(fieldname)
+        training_data, test_data, training_target, test_target = train_test_split(vectorised_dataset, target_class, test_size = 0.4)
+        prediction = classifier.predict(test_data)
+        accuracy = metrics.accuracy_score(test_target, prediction)
+        f1_score = metrics.f1_score(test_target, prediction, average='weighted')
+        print(f"TARGET LABEL {fieldname.upper()}:")
+        print(f"Accuracy: {round(accuracy.mean() *100,2)}%")
+        print(f"F1_score: {round(f1_score.mean() *100,2)}%")
+    warnings.filterwarnings('always') 
 
 
 def predict_ticket_labels(description: str, target_fields: List[str]) -> Dict[str,str]:
@@ -73,9 +116,7 @@ def predict_ticket_labels(description: str, target_fields: List[str]) -> Dict[st
     vect = get_vectoriser()
     for field in target_fields:
         #get the specific current classifier
-        classifier_dir = conf.get_config('pickle_files','current_classifier')
-        classifier_name = f"{PICKLE_CLASSIFIER_PATH}/{classifier_dir}/{field}_classifier.pickle"
-        classifier = pickle.load(open(classifier_name, "rb"))
+        classifier = get_classifier(field)
         if classifier:
             prediction = classifier.predict(vect.transform([description]))
             labels[field] = prediction[0]
@@ -96,7 +137,10 @@ if __name__ == '__main__':
     '''
     
     # Uncomment the next line to train and test the model
-    split_train_test_model(full_dataset,fieldnames)
+    #create_and_test_model(full_dataset,fieldnames)
     
     #uncomment the next line to test the new ticket prediction
     #print(predict_ticket_labels(test_ticket,fieldnames))
+
+    # Uncomment the next line to test the model
+    test_existing_classifier(full_dataset,fieldnames)
