@@ -110,6 +110,6 @@ if __name__ == '__main__':
     field_list = ['description']
     dump_all_vectorised_data_to_pickle(vect, full_dataset, field_list)
     
-    print("All vectorised data was dumped to pickle files!")
+    #print("All vectorised data was dumped to pickle files!")
     processing_time= time.time() - start_time
     print(f"PROCESSING TIME: {processing_time} seconds (approximately {processing_time // 60} minutes)")

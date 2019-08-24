@@ -142,5 +142,6 @@ if __name__ == '__main__':
     #uncomment the next line to test the new ticket prediction
     #print(predict_ticket_labels(test_ticket,fieldnames))
 
-    # Uncomment the next line to test the model
+    # Uncomment the next line to test the model (using an unseen dataset passed 
+    #via config)
     test_existing_classifier(full_dataset,fieldnames)
